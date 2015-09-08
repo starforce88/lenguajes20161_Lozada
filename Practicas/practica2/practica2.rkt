@@ -66,3 +66,8 @@
 (define zocalo (building "Zocalo" gps-zocalo))
 (define plaza-perisur (building "Plaza Perisur" gps-perisur))
 (define plazas (MCons plaza-satelite (MCons plaza-perisur (MEmpty))))
+
+(define (haversine coord1 coord2)
+  (if (Coordinates? coord1)
+      (if (Coordinates? coord2)
+          )))
