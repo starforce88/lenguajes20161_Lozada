@@ -45,8 +45,44 @@
                 (MCons (car lista) (MArray2MList (MArray n (cdr lista)))))]))
 
 ;Ejercicio 8
+(define (printML lista)
+  (string-append "[" (printML-aux lista) "]"))
+
+
+(define (printML-aux lista)
+  (type-case MList lista
+    [MEmpty() ""]
+    [MCons (elem lis) (if (MCons? lis)
+                          (cond
+                            [(number? elem) 
+                             (string-append (number->string elem) ", "
+                                            (printML-aux lis))]
+                            [(symbol? elem) 
+                             (string-append (symbol->string elem) ", "
+                                            (printML-aux lis))]
+                            [(string? elem) 
+                             (string-append elem ", " (printML-aux lis))])
+                          (cond
+                            [(number? elem) (number->string elem)]
+                            [(symbol? elem) (symbol->string elem)]
+                            [(string? elem) elem]))]))
+
 ;Ejercicio 9
+(define (concatML lista1 lista2)
+  (type-case MList lista1
+    [MEmpty() (type-case MList lista2
+                [MEmpty() (MEmpty)]
+                [MCons (elem lis) (MCons elem lis)])]
+    [MCons (elem1 lis1) (type-case MList lista2
+                          [MEmpty() lista1]
+                          [MCons (elem2 lis2) (MCons elem1 (concatML lis1 lista2))])]))
+
 ;Ejercicio 10
+(define (lengthML lista)
+  (type-case MList lista
+    [MEmpty() 0]
+    [MCons (elem lis) (+ 1 (lengthML lis))]))
+
 ;Ejercicio 11
 ;Ejercicio 12
 ;Ejercicio 13
@@ -68,6 +104,24 @@
 (define plazas (MCons plaza-satelite (MCons plaza-perisur (MEmpty))))
 
 (define (haversine coord1 coord2)
-  (if (Coordinates? coord1)
-      (if (Coordinates? coord2)
-          )))
+  (type-case Coordinates coord1
+    [GPS (lat1 long1)
+         (type-case Coordinates coord2
+           [GPS (lat2 long2)
+                (* 2
+                   6371
+                   (asin (sqrt (+ (sqr (sin (/ (- lat2 lat1) 2)))
+                                  (* (cos lat1)
+                                     (cos lat2)
+                                     (sqr (sin (/ (- long2 long1)
+                                                  2))))))))])]))
+
+;Ejercicio14
+;Ejercicio15
+;Ejercicio16
+(define (area figura)
+  (type-case Figure figura
+    [Circle (c r) (* pi (sqr r))]
+    [Square (p l) (* l l)]
+    [Rectangle (p a l) (* a l)]))
+;Ejercicio17
