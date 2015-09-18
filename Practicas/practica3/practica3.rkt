@@ -102,3 +102,86 @@
 (define (bpm->zone lista zones)
   (cond
     [(empty? lista) '()]))
+
+;Ejercicio 9 ninBT
+(define (ninBT arbol)
+  (type-case BTree arbol
+    [EmptyBT() 0 ]
+    [BNode(fun li elem ld) 
+          (cond
+            [(and (not(EmptyBT? li)) (not(EmptyBT? ld))) (+ 1 (ninBT li) (ninBT ld))]
+            [(and (not(EmptyBT? li)) (EmptyBT? ld)) (+ 1 (ninBT li))]
+            [(and (EmptyBT? li) (not (EmptyBT? ld)) (+ 1 (ninBT ld)))]
+            [(and (EmptyBT? li) (EmptyBT? ld)) 0])]))
+
+(test (ninBT (BNode < (BNode < (EmptyBT) 3 (EmptyBT)) 1 (BNode < (EmptyBT) 2 (EmptyBT)))) 1)
+(test (ninBT (BNode < (BNode < (EmptyBT) 3 (EmptyBT)) 1 (BNode < (EmptyBT) 2 (EmptyBT)))) 2)
+(test (ninBT (BNode < (BNode < (EmptyBT) 3 (EmptyBT)) 1 (BNode < (EmptyBT) 2 (EmptyBT)))) 0)
+(test (ninBT (EmptyBT)) 0)
+(test (ninBT (EmptyBT)) 3)
+
+;Ejercicio 10 nlBT
+(define (nlBT arbol)
+  (type-case BTree arbol
+    [EmptyBT() 0]
+    [BNode(func li elem ld) (cond 
+                        [(and (not (EmptyBT? li)) (not (EmptyBT? ld))) (+  (nlBT li) (nlBT ld))]
+                        [(and  (EmptyBT? li) (EmptyBT? ld)) (+ 1 (nlBT li) (nlBT ld))]
+                        )]))
+
+(test (nlBT (BNode < (BNode < (EmptyBT) 3 (EmptyBT)) 1 (BNode < (EmptyBT) 2 (EmptyBT)))) 2)
+(test (nlBT (BNode < (BNode < (EmptyBT) 3 (EmptyBT)) 1 (BNode < (EmptyBT) 2 (EmptyBT)))) 1)
+(test (nlBT (BNode < (EmptyBT) 2 (EmptyBT))) 1)
+(test (nlBT (BNode < (EmptyBT) 2 (EmptyBT))) 2)
+(test (nlBT (EmptyBT)) 0)
+
+;Ejercicio 11 nnBT
+(define (nnBT arbol)
+  (+ (ninBT arbol) (nlBT arbol)))
+
+(test (nnBT (BNode < (BNode < (EmptyBT) 3 (EmptyBT)) 1 (BNode < (EmptyBT) 2 (EmptyBT)))) 3)
+(test (nnBT (BNode < (BNode < (EmptyBT) 3 (EmptyBT)) 1 (BNode < (EmptyBT) 2 (EmptyBT)))) 1)
+(test (nnBT (BNode < (EmptyBT) 1 (EmptyBT))) 3)
+(test (nnBT (BNode < (EmptyBT) 1 (EmptyBT))) 1)
+(test (nnBT (EmptyBT)) 0)
+
+;Ejercicio 12 mapBT
+(define (mapBT fun arbol) 
+  (type-case BTree arbol 
+    [EmptyBT() (EmptyBT)] 
+    [BNode (func li elem ld) 
+           (if (procedure? fun) 
+               (BNode func (mapBT fun li) (fun elem) (mapBT fun ld)) 
+               (error 'fun "no es una funcion"))]))
+
+(test (mapBT add1 (BNode < (EmptyBT) 1 (BNode < (EmptyBT) 2 (EmptyBT)))) (BNode < (EmptyBT) 2 (BNode < (EmptyBT) 3 (EmptyBT))))
+(test (mapBT add1 (BNode < (EmptyBT) 1 (BNode < (EmptyBT) 2 (EmptyBT)))) (BNode < (EmptyBT) 1 (BNode < (EmptyBT) 2 (EmptyBT))))
+(test (mapBT (lambda (x) (* x x)) (BNode < (EmptyBT) 3 (BNode < (EmptyBT) 2 (EmptyBT)))) (BNode < (EmptyBT) 9 (BNode < (EmptyBT) 4 (EmptyBT))))
+(test (mapBT (lambda (x) (* x x)) (BNode < (EmptyBT) 3 (BNode < (EmptyBT) 2 (EmptyBT)))) (BNode < (EmptyBT) 3 (BNode < (EmptyBT) 2 (EmptyBT))))
+(test (mapBT add1 (EmptyBT)) (EmptyBT))
+
+;Ejercicio 13
+;(define w 2)
+(define (preorderBT arbol)
+  (type-case BTree arbol
+    [EmptyBT() '()]
+    [BNode (func li elem ld) (cons elem (append (preorderBT li) (preorderBT ld)))]))
+(test (preorderBT arbol-base) '("F" "B" "A" "D" "C" "E" "G" "I" "H"))
+(test (preorderBT arbol-base) '("A" "B" "C" "D" "E" "F" "G" "H" "I"))
+(test (preorderBT arbol-base) '("A" "C" "E" "D" "B" "H" "I" "G" "F"))
+
+(define (inorderBT arbol)
+  (type-case BTree arbol
+    [EmptyBT() '()]
+    [BNode (func li elem ld) (append (inorderBT li) (cons elem (inorderBT ld)))]))
+(test (inorderBT arbol-base) '("A" "B" "C" "D" "E" "F" "G" "H" "I"))
+(test (inorderBT arbol-base) '("F" "B" "A" "D" "C" "E" "G" "I" "H"))
+(test (inorderBT arbol-base) '("A" "C" "E" "D" "B" "H" "I" "G" "F"))
+
+(define (postorderBT arbol)
+  (type-case BTree arbol
+    [EmptyBT() '()]
+    [BNode (func li elem ld) (append (postorderBT li) (append (postorderBT ld) (cons elem '())))]))
+(test (postorderBT arbol-base) '("A" "C" "E" "D" "B" "H" "I" "G" "F"))
+(test (postorderBT arbol-base) '("F" "B" "A" "D" "C" "E" "G" "I" "H"))
+(test (postorderBT arbol-base) '("A" "B" "C" "D" "E" "F" "G" "H" "I"))
