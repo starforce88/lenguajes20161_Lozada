@@ -9,7 +9,7 @@ de su practica no tiene pruebas y las que tienen algunas están erróneas.
 Por esta unica ocasión solo les bajo un punto pero si en la siguiente practica
 no ponen sus pruebas su ejercicio lo tomare erroneo.
 
-**Calificacion: 9**
+**Calificación: 9**
 
 ### Practica 2
 
@@ -22,3 +22,9 @@ No implementaron las funciones mapML, filterML, haversine, closest-building, bui
 No tienen ninguna prueba.
 
 **Calificación: 5**
+
+### Practica 3
+No implementaron las funciones create-trackpoints, total-distance, average-hr,
+max-hr, collapse-trackpoints.
+
+**Calificación: 6**
