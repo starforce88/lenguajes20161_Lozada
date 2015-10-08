@@ -5,37 +5,11 @@
 (print-only-errors true)
 
 (define (desugar expr)
+  ;; Implementar desugar
   (type-case FAES expr
     [numS (n) (num n)]
-    [idS (s) (id s)]
-    [binopS (f l r) (binop f (desugar l) (desugar r))]
-    [funS (lista funcion) (fun lista (desugar funcion))]
-    [appS (fun args) (app (desugar fun) (desugar-list args))]
-    [withS (list body) (app (fun (vars-bind list) (desugar body)) (desugar-bind list))]
-    [with*S (list body) (app (fun (vars-bind list) (desugar body)) (desugar-bind list))])
-    ;;[else (error 'desugar "Not implemented")])
+    [else (error 'desugar "Not implemented")])
   )
-
-;vars-bind
-(define (vars-bind list)
-  (cond
-    [(empty? list) '()]
-    [else (type-case Binding (car list)
-            [bind (s v) (cons s (vars-bind (cdr list)))])]))
-
-;desugar-bind
-(define (desugar-bind list)
-  (cond
-    [(empty? list) '()]
-    [else (type-case Binding (car list)
-            [bind (s v) (cons (desugar v) (desugar-bind (cdr list)))])]))
-
-
-;desugar-list
-(define (desugar-list lista)
-  (cond
-    [(empty? lista) '()]
-    [else (cons (desugar (car lista)) (desugar-list (cdr lista)))]))
 
 
 (test (desugar (parse '{+ 3 4})) (binop + (num 3) (num 4)))
@@ -45,33 +19,9 @@
 (define (cparse sexp)
   (desugar (parse sexp)))
 
-(define (lookup x env)
-  (type-case Env env
-    [aSub (n v e) (if (eq? x n) v (lookup x e))]
-    [mtSub () (error 'lookup "Variable libre")]))
-
 (define (interp expr env)
-  (type-case FAE expr
-    [num (n) (numV n)]
-    [id (x) (lookup x env)]
-    [fun (params body) (closureV params body env)]
-    [binop (op l r)
-           (let ((li (interp l env))
-                 (ri (interp r env)))
-             (cond
-               [(and (numV? li) (numV? ri) (member? op (list + - * /) eq?))
-                (numV (op (numV-n li) (numV-n ri)))]
-               [else (error 'interp "Aplicación no válida de operador")]))]
-    [app (f args)
-         (let* ((f-val (interp f env))
-                (f-params (closureV-param f-val))
-                (f-body (closureV-body f-val))
-                (f-env (closureV-env f-val))
-                (param->aSub (lambda (p arg prev-env)
-                                (aSub p (interp arg env) prev-env)))
-                (new-env (foldl param->aSub f-env f-params args)))
-             (interp f-body new-env))]
-    ))
+  ;; Implementar interp
+  (error 'interp "Not implemented"))
 
 (define (rinterp expr)
   (interp expr (mtSub)))
