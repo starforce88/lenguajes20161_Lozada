@@ -31,8 +31,16 @@ max-hr, collapse-trackpoints.
 
 ### Practica 4
 Tu implementación de with* es erronea, aparte tu interprete es invalido 
+
 **Calificación: 7**
 
+### Practica 5
+
+**Calificación: 0**
+
+### Practica 6
+
+**Calificación: 0**
 
 ## Tareas
 
@@ -41,5 +49,9 @@ Tu implementación de with* es erronea, aparte tu interprete es invalido
 **Calificación: 0**
 
 ### Tarea 2
+
+**Calificación: 0**
+
+### Tarea 3
 
 **Calificación: 0**
